@@ -8,9 +8,29 @@ export default function App() {
     company: '',
     message: ''
   });
+  const [showLogin, setShowLogin] = useState(false);
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
 
-  const login = () => {
-    window.location.href = 'https://desktop-app-coaching.vercel.app';
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    
+    const validAccounts = [
+      'coach1@test.com',
+      'coach2@test.com', 
+      'beta@coachingspace.com'
+    ];
+    
+    if (validAccounts.includes(loginData.email) && loginData.password === 'test2024') {
+      window.location.href = 'https://desktop-app-coaching.vercel.app';
+    } else {
+      setLoginError('Ungültige Anmeldedaten. Verwende einen gültigen Beta-Account.');
+    }
+  };
+
+  const fillDemoAccount = () => {
+    setLoginData({ email: 'coach1@test.com', password: 'test2024' });
   };
 
   const handleFeedbackSubmit = (e: React.FormEvent) => {
@@ -36,13 +56,85 @@ export default function App() {
             <span className="text-xl font-bold">CoachingSpace</span>
           </div>
           <button 
-            onClick={login}
+            onClick={() => setShowLogin(true)}
             className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors"
           >
             Beta-Zugang
           </button>
         </div>
       </nav>
+
+      {/* Login Modal */}
+      {showLogin && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full border border-slate-700">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-bold mb-2">Beta-Login</h3>
+              <p className="text-slate-400">Melde dich mit deinem Beta-Account an</p>
+            </div>
+
+            {loginError && (
+              <div className="bg-red-600/20 border border-red-500/30 rounded-lg p-3 mb-4">
+                <p className="text-red-400 text-sm">{loginError}</p>
+              </div>
+            )}
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">E-Mail</label>
+                <input 
+                  type="email" 
+                  required
+                  placeholder="deine@email.com"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Passwort</label>
+                <input 
+                  type="password" 
+                  required
+                  placeholder="Passwort"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+              
+              <button 
+                type="submit" 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+              >
+                Anmelden
+              </button>
+            </form>
+
+            <div className="mt-6 p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg">
+              <p className="text-blue-300 text-sm mb-3">Demo-Account verwenden:</p>
+              <button
+                onClick={fillDemoAccount}
+                className="w-full bg-blue-600/50 hover:bg-blue-600 text-blue-100 px-4 py-2 rounded text-sm transition-colors border border-blue-500/50"
+              >
+                Demo-Account ausfüllen
+              </button>
+            </div>
+
+            <button 
+              onClick={() => {
+                setShowLogin(false);
+                setLoginError('');
+                setLoginData({ email: '', password: '' });
+              }}
+              className="mt-4 w-full text-slate-400 hover:text-white transition-colors"
+            >
+              Abbrechen
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="pt-32 pb-24 px-6">
@@ -63,7 +155,7 @@ export default function App() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <button 
-              onClick={login}
+              onClick={() => setShowLogin(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-xl"
             >
               Plattform erkunden
@@ -352,29 +444,23 @@ export default function App() {
         </div>
       </section>
 
-      {/* Login Section */}
+      {/* Login Section Info */}
       <section className="py-24 px-6 bg-slate-800">
-        <div className="max-w-md mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Beta-Zugang</h2>
-            <p className="text-slate-400">Teste das triadische KI-Coaching mit Demo-Account</p>
-          </div>
-
-          <div className="bg-slate-700 rounded-2xl shadow-xl p-8 border border-slate-600">
-            <div className="p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg mb-6">
-              <p className="text-blue-300 text-sm mb-3">Demo-Account verwenden:</p>
-              <div className="space-y-2 text-sm text-slate-300">
-                <div>E-Mail: coach1@test.com</div>
-                <div>Passwort: test2024</div>
-              </div>
+        <div className="max-w-md mx-auto text-center">
+          <h2 className="text-3xl font-bold text-white mb-4">Beta-Zugang anfordern</h2>
+          <p className="text-slate-400 mb-8">
+            Interesse an einem Beta-Account? Kontaktiere uns über das Feedback-Formular 
+            oder klicke oben auf "Beta-Zugang" um dich mit einem Demo-Account anzumelden.
+          </p>
+          
+          <div className="bg-slate-700 rounded-2xl p-6 border border-slate-600">
+            <h3 className="text-lg font-semibold mb-3">Demo-Accounts verfügbar:</h3>
+            <div className="text-sm text-slate-300 space-y-1">
+              <div>coach1@test.com</div>
+              <div>coach2@test.com</div>
+              <div>beta@coachingspace.com</div>
             </div>
-            
-            <button
-              onClick={login}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-            >
-              🚀 Zur Plattform
-            </button>
+            <div className="text-xs text-slate-400 mt-3">Passwort für alle: test2024</div>
           </div>
         </div>
       </section>
