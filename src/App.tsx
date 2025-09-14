@@ -435,9 +435,8 @@ export default function App() {
               
               <button
                 onClick={handleFeedbackSubmit}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors"
               >
-                <span className="mr-2">📩</span>
                 Feedback senden
               </button>
             </div>
