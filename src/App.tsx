@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Target, Brain, Video, Users, Calendar, BarChart3, MessageSquare, FileText, TrendingUp, CheckCircle, Send } from 'lucide-react';
 
 export default function App() {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
