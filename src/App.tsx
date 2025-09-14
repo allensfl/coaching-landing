@@ -384,7 +384,7 @@ export default function App() {
 
           {feedbackSubmitted ? (
             <div className="bg-green-600/20 border border-green-500/30 rounded-2xl p-8 text-center">
-              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+              <div className="text-4xl mb-4">✅</div>
               <h3 className="text-2xl font-bold mb-2 text-green-400">Vielen Dank!</h3>
               <p className="text-slate-300">
                 Dein Feedback wurde erfolgreich übermittelt. Wir melden uns in Kürze bei dir.
