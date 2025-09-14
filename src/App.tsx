@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Target, Brain, Video, Users, Calendar, BarChart3, MessageSquare, FileText, TrendingUp, CheckCircle, Send } from 'lucide-react';
 
 export default function App() {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
@@ -140,6 +141,7 @@ export default function App() {
       <section className="pt-32 pb-24 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center bg-blue-600/20 border border-blue-500/30 rounded-full px-4 py-2 mb-8">
+            <Brain className="w-4 h-4 text-blue-300 mr-2" />
             <span className="text-sm text-blue-300">Triadisches KI-Coaching</span>
           </div>
           
@@ -181,7 +183,7 @@ export default function App() {
                 <div className="text-slate-400 text-sm ml-4">desktop-app-coaching.vercel.app/ki-coaching</div>
               </div>
               <div className="p-8 text-center">
-                <div className="text-4xl mb-4">🎯</div>
+                <Target className="w-16 h-16 text-blue-400 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold mb-2">Triadisches KI-Coaching</h3>
                 <p className="text-slate-400">Coach + Coachee + KI-Bot im strukturierten 4-Phasen-Prozess</p>
               </div>
@@ -203,7 +205,9 @@ export default function App() {
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
-              <div className="text-4xl mb-6">🎯</div>
+              <div className="flex justify-center mb-6">
+                <Target className="w-12 h-12 text-blue-400" />
+              </div>
               <h3 className="text-2xl font-bold mb-4">4-Phasen-Prozess</h3>
               <p className="text-slate-300 mb-6">
                 Strukturierter Coaching-Ablauf: Problem- & Zielbeschreibung → Problemanalyse → 
@@ -230,7 +234,9 @@ export default function App() {
             </div>
 
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
-              <div className="text-4xl mb-6">📚</div>
+              <div className="flex justify-center mb-6">
+                <FileText className="w-12 h-12 text-purple-400" />
+              </div>
               <h3 className="text-2xl font-bold mb-4">Prompt-Bibliothek</h3>
               <p className="text-slate-300 mb-6">
                 Umfangreiche Sammlung vorgefertigter Coaching-Aufträge und Gesprächsführungs-Prompts 
@@ -247,7 +253,9 @@ export default function App() {
             </div>
 
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
-              <div className="text-4xl mb-6">🤝</div>
+              <div className="flex justify-center mb-6">
+                <Video className="w-12 h-12 text-green-400" />
+              </div>
               <h3 className="text-2xl font-bold mb-4">Video-Integration</h3>
               <p className="text-slate-300 mb-6">
                 Coach und Coachee nutzen gemeinsam im Video-Call den integrierten Coach-Bot 
@@ -287,7 +295,7 @@ export default function App() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="text-2xl">👥</div>
+                <Users className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Client Management</h3>
               <p className="text-slate-300">
@@ -297,7 +305,7 @@ export default function App() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="text-2xl">📅</div>
+                <Calendar className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Session Management</h3>
               <p className="text-slate-300">
@@ -307,7 +315,7 @@ export default function App() {
 
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <div className="text-2xl">📊</div>
+                <BarChart3 className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-2xl font-bold mb-4">Business Analytics</h3>
               <p className="text-slate-300">
@@ -328,7 +336,7 @@ export default function App() {
 
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-              <div className="text-2xl mb-4">💬</div>
+              <MessageSquare className="w-8 h-8 text-blue-400 mb-4" />
               <p className="text-lg text-slate-300 mb-6">
                 "Das triadische KI-Coaching ist ein Gamechanger. Die strukturierten Phasen und die Prompt-Bibliothek 
                 geben dem Coaching-Prozess eine neue Tiefe. Der KI-Bot als dritte Instanz bringt überraschende Perspektiven."
@@ -345,7 +353,7 @@ export default function App() {
             </div>
 
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-              <div className="text-2xl mb-4">💬</div>
+              <MessageSquare className="w-8 h-8 text-green-400 mb-4" />
               <p className="text-lg text-slate-300 mb-6">
                 "Die 4-Phasen-Struktur macht die Sessions viel fokussierter. 
                 Besonders die Prompt-Bibliothek hilft bei der gezielten Gesprächsführung mit dem KI-Bot."
@@ -376,7 +384,7 @@ export default function App() {
 
           {feedbackSubmitted ? (
             <div className="bg-green-600/20 border border-green-500/30 rounded-2xl p-8 text-center">
-              <div className="text-4xl mb-4">✅</div>
+              <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
               <h3 className="text-2xl font-bold mb-2 text-green-400">Vielen Dank!</h3>
               <p className="text-slate-300">
                 Dein Feedback wurde erfolgreich übermittelt. Wir melden uns in Kürze bei dir.
@@ -436,7 +444,7 @@ export default function App() {
                 onClick={handleFeedbackSubmit}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center"
               >
-                <div className="mr-2">📩</div>
+                <Send className="w-5 h-5 mr-2" />
                 Feedback senden
               </button>
             </div>
