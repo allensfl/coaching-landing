@@ -11,32 +11,38 @@ export default function App() {
     interest: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (event) => {
+    const target = event.target;
+    const name = target.name;
+    const value = target.value;
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
-  const handleBetaRequest = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    
-    // Validierung
+  const handleBetaRequest = () => {
     if (!formData.firstName || !formData.lastName || !formData.email) {
       alert('Bitte fülle alle Pflichtfelder aus.');
       return;
     }
 
-    // Email-Validierung
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       alert('Bitte gib eine gültige E-Mail-Adresse ein.');
       return;
     }
 
-    // Hier würdest du die Daten an dein Backend senden
     console.log('Beta-Anfrage:', formData);
     setBetaRequestSubmitted(true);
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -49,7 +55,7 @@ export default function App() {
               CoachingSpace
             </div>
             <button 
-              onClick={() => document.getElementById('beta-request').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('beta-request')}
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors"
             >
               Beta-Zugang anfordern
@@ -77,13 +83,13 @@ export default function App() {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => document.getElementById('beta-request').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('beta-request')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
             >
               Beta-Zugang anfordern
             </button>
             <button 
-              onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => scrollToSection('features')}
               className="border border-slate-600 hover:border-slate-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
             >
               Mehr erfahren
@@ -251,60 +257,53 @@ export default function App() {
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="firstName">
+                  <label className="block text-sm font-medium mb-2">
                     Vorname *
                   </label>
                   <input
                     type="text"
-                    id="firstName"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                     placeholder="Dein Vorname"
-                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2" htmlFor="lastName">
+                  <label className="block text-sm font-medium mb-2">
                     Nachname *
                   </label>
                   <input
                     type="text"
-                    id="lastName"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                     placeholder="Dein Nachname"
-                    required
                   />
                 </div>
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2" htmlFor="email">
+                <label className="block text-sm font-medium mb-2">
                   E-Mail-Adresse *
                 </label>
                 <input
                   type="email"
-                  id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                   placeholder="deine@email.com"
-                  required
                 />
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2" htmlFor="company">
+                <label className="block text-sm font-medium mb-2">
                   Unternehmen / Praxis
                 </label>
                 <input
                   type="text"
-                  id="company"
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
@@ -314,11 +313,10 @@ export default function App() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2" htmlFor="experience">
+                <label className="block text-sm font-medium mb-2">
                   Coaching-Erfahrung
                 </label>
                 <select
-                  id="experience"
                   name="experience"
                   value={formData.experience}
                   onChange={handleInputChange}
@@ -334,11 +332,10 @@ export default function App() {
               </div>
 
               <div className="mb-8">
-                <label className="block text-sm font-medium mb-2" htmlFor="interest">
+                <label className="block text-sm font-medium mb-2">
                   Was interessiert dich am meisten an KI-Coaching?
                 </label>
                 <textarea
-                  id="interest"
                   name="interest"
                   value={formData.interest}
                   onChange={handleInputChange}
