@@ -27,7 +27,6 @@ export default function App() {
 
   const sendWelcomeEmail = async (userData, demoToken) => {
     const demoUrl = `https://desktop-app-coaching.vercel.app?demo=${demoToken}`;
-    setDemoLink(demoUrl);
     
     console.log('Welcome E-Mail würde gesendet werden:', {
       to: userData.email,
@@ -38,6 +37,7 @@ export default function App() {
   };
 
   const handleBetaRequest = async () => {
+    // Validierung
     if (!formData.firstName || !formData.lastName || !formData.email) {
       alert('Bitte fülle alle Pflichtfelder aus.');
       return;
@@ -49,9 +49,12 @@ export default function App() {
       return;
     }
 
+    console.log('Starte Beta-Anfrage...');
     setIsSubmitting(true);
 
     try {
+      console.log('Sende Daten an Supabase:', formData);
+      
       const { data, error } = await supabase
         .from('beta_users')
         .insert([
@@ -66,7 +69,10 @@ export default function App() {
         ])
         .select('id, demo_token, email');
 
+      console.log('Supabase Antwort:', { data, error });
+
       if (error) {
+        console.error('Supabase Fehler:', error);
         if (error.code === '23505') {
           alert('Diese E-Mail-Adresse wurde bereits für Beta-Zugang registriert.');
         } else {
@@ -76,6 +82,16 @@ export default function App() {
       }
 
       const newUser = data[0];
+      console.log('Neuer User:', newUser);
+      
+      if (newUser && newUser.demo_token) {
+        const generatedDemoLink = `https://desktop-app-coaching.vercel.app?demo=${newUser.demo_token}`;
+        console.log('Generierter Demo-Link:', generatedDemoLink);
+        setDemoLink(generatedDemoLink);
+      } else {
+        console.error('Kein demo_token erhalten!', newUser);
+      }
+      
       await sendWelcomeEmail(newUser, newUser.demo_token);
       setBetaRequestSubmitted(true);
       console.log('Beta-User erfolgreich angelegt:', newUser);
@@ -187,7 +203,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* Features sections... */}
+      {/* KI-Coaching Section */}
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -246,6 +262,41 @@ export default function App() {
         </div>
       </section>
 
+      {/* Traditional Features */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Komplette Coaching-Plattform</h2>
+            <p className="text-xl text-slate-300">
+              Alle Tools die du als Coach brauchst - in einer integrierten Lösung
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-blue-400">Client Management</h3>
+              <p className="text-slate-300">
+                Verwalte alle deine Coachees professionell mit Kontaktdaten, Session-Historie und Fortschrittsdokumentation.
+              </p>
+            </div>
+
+            <div className="bg-green-600/10 border border-green-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-green-400">Session Management</h3>
+              <p className="text-slate-300">
+                Terminplanung, Session-Notizen und Aufgaben-Tracking zwischen den Terminen - alles in einem System.
+              </p>
+            </div>
+
+            <div className="bg-purple-600/10 border border-purple-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-purple-400">Business Analytics</h3>
+              <p className="text-slate-300">
+                Übersichtliches Dashboard mit KPIs, Rechnungsstellung und Finanzübersicht für deine Coaching-Praxis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Beta Request Form */}
       <section id="beta-request" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
@@ -291,6 +342,23 @@ export default function App() {
                 >
                   Demo jetzt starten
                 </a>
+                <button
+                  onClick={() => {
+                    setBetaRequestSubmitted(false);
+                    setDemoLink('');
+                    setFormData({
+                      firstName: '',
+                      lastName: '',
+                      email: '',
+                      company: '',
+                      experience: '',
+                      interest: ''
+                    });
+                  }}
+                  className="border border-slate-600 hover:border-slate-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Weitere Anmeldung
+                </button>
               </div>
             </div>
           ) : (
