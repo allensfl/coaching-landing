@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function App() {
   const [betaRequestSubmitted, setBetaRequestSubmitted] = useState(false);
@@ -11,14 +11,14 @@ export default function App() {
     interest: ''
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
-  const handleBetaRequest = (e) => {
+  const handleBetaRequest = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
     // Validierung
