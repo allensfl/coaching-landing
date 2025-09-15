@@ -334,7 +334,7 @@ export default function App() {
               )}
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                
+                <a
                   href={demoLink}
                   target="_blank"
                   rel="noopener noreferrer"
