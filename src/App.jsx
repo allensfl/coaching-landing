@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   const [betaRequestSubmitted, setBetaRequestSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [demoLink, setDemoLink] = useState('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -22,7 +25,19 @@ export default function App() {
     });
   };
 
-  const handleBetaRequest = () => {
+  const sendWelcomeEmail = async (userData, demoToken) => {
+    const demoUrl = `https://desktop-app-coaching.vercel.app?demo=${demoToken}`;
+    setDemoLink(demoUrl);
+    
+    console.log('Welcome E-Mail würde gesendet werden:', {
+      to: userData.email,
+      subject: 'Dein CoachingSpace Demo-Zugang ist bereit!',
+      demoLink: demoUrl,
+      expiresIn: '30 Tage'
+    });
+  };
+
+  const handleBetaRequest = async () => {
     if (!formData.firstName || !formData.lastName || !formData.email) {
       alert('Bitte fülle alle Pflichtfelder aus.');
       return;
@@ -34,8 +49,43 @@ export default function App() {
       return;
     }
 
-    console.log('Beta-Anfrage:', formData);
-    setBetaRequestSubmitted(true);
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('beta_users')
+        .insert([
+          {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            company: formData.company,
+            experience: formData.experience,
+            interest: formData.interest
+          }
+        ])
+        .select('id, demo_token, email');
+
+      if (error) {
+        if (error.code === '23505') {
+          alert('Diese E-Mail-Adresse wurde bereits für Beta-Zugang registriert.');
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      const newUser = data[0];
+      await sendWelcomeEmail(newUser, newUser.demo_token);
+      setBetaRequestSubmitted(true);
+      console.log('Beta-User erfolgreich angelegt:', newUser);
+      
+    } catch (error) {
+      console.error('Fehler beim Speichern:', error);
+      alert('Ein Fehler ist aufgetreten. Bitte versuche es später nochmal.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const scrollToSection = (sectionId) => {
@@ -137,7 +187,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* KI-Coaching Section */}
+      {/* Features sections... */}
       <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -196,41 +246,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* Traditional Features */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Komplette Coaching-Plattform</h2>
-            <p className="text-xl text-slate-300">
-              Alle Tools die du als Coach brauchst - in einer integrierten Lösung
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-4 text-blue-400">Client Management</h3>
-              <p className="text-slate-300">
-                Verwalte alle deine Coachees professionell mit Kontaktdaten, Session-Historie und Fortschrittsdokumentation.
-              </p>
-            </div>
-
-            <div className="bg-green-600/10 border border-green-500/20 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-4 text-green-400">Session Management</h3>
-              <p className="text-slate-300">
-                Terminplanung, Session-Notizen und Aufgaben-Tracking zwischen den Terminen - alles in einem System.
-              </p>
-            </div>
-
-            <div className="bg-purple-600/10 border border-purple-500/20 rounded-2xl p-8">
-              <h3 className="text-2xl font-bold mb-4 text-purple-400">Business Analytics</h3>
-              <p className="text-slate-300">
-                Übersichtliches Dashboard mit KPIs, Rechnungsstellung und Finanzübersicht für deine Coaching-Praxis.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Beta Request Form */}
       <section id="beta-request" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
@@ -238,20 +253,45 @@ export default function App() {
             <h2 className="text-4xl font-bold mb-6">Beta-Zugang anfordern</h2>
             <p className="text-xl text-slate-300">
               Sei einer der ersten Coaches, die triadisches KI-Coaching erleben. 
-              Wir erstellen dir einen personalisierten Beta-Zugang.
+              Du erhältst sofort einen personalisierten Demo-Zugang per E-Mail.
             </p>
           </div>
 
           {betaRequestSubmitted ? (
             <div className="bg-green-600/20 border border-green-500/30 rounded-2xl p-8 text-center">
               <div className="text-4xl mb-4">✅</div>
-              <h3 className="text-2xl font-bold mb-4 text-green-400">Anfrage erhalten!</h3>
+              <h3 className="text-2xl font-bold mb-4 text-green-400">Demo-Zugang erstellt!</h3>
               <p className="text-slate-300 mb-6">
-                Danke {formData.firstName}! Wir erstellen deinen personalisierten Beta-Zugang und melden uns binnen 24 Stunden mit den Zugangsdaten.
+                Danke {formData.firstName}! Dein persönlicher Demo-Zugang wurde erstellt.
               </p>
-              <p className="text-sm text-slate-400">
-                Falls du Fragen hast, antworte einfach auf unsere E-Mail.
-              </p>
+              
+              {demoLink && (
+                <div className="bg-slate-800 rounded-lg p-4 mb-6">
+                  <p className="text-sm text-slate-400 mb-2">Dein Demo-Link:</p>
+                  <a 
+                    href={demoLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 break-all text-sm"
+                  >
+                    {demoLink}
+                  </a>
+                  <p className="text-xs text-slate-500 mt-2">
+                    Link ist 30 Tage gültig • Auch per E-Mail versendet
+                  </p>
+                </div>
+              )}
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                
+                  href={demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-block"
+                >
+                  Demo jetzt starten
+                </a>
+              </div>
             </div>
           ) : (
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
@@ -267,6 +307,7 @@ export default function App() {
                     onChange={handleInputChange}
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                     placeholder="Dein Vorname"
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div>
@@ -280,6 +321,7 @@ export default function App() {
                     onChange={handleInputChange}
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                     placeholder="Dein Nachname"
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -295,6 +337,7 @@ export default function App() {
                   onChange={handleInputChange}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                   placeholder="deine@email.com"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -309,6 +352,7 @@ export default function App() {
                   onChange={handleInputChange}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                   placeholder="Name deiner Coaching-Praxis"
+                  disabled={isSubmitting}
                 />
               </div>
 
@@ -321,6 +365,7 @@ export default function App() {
                   value={formData.experience}
                   onChange={handleInputChange}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                  disabled={isSubmitting}
                 >
                   <option value="">Bitte wählen</option>
                   <option value="< 1 Jahr">Weniger als 1 Jahr</option>
@@ -342,18 +387,20 @@ export default function App() {
                   rows={4}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                   placeholder="Erzähl uns kurz, was dich neugierig macht auf triadisches KI-Coaching..."
+                  disabled={isSubmitting}
                 />
               </div>
 
               <button
                 onClick={handleBetaRequest}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-4 px-8 rounded-xl transition-colors"
               >
-                Beta-Zugang anfordern
+                {isSubmitting ? 'Erstelle Demo-Zugang...' : 'Demo-Zugang anfordern'}
               </button>
 
               <p className="text-sm text-slate-400 mt-4 text-center">
-                * Pflichtfelder. Wir erstellen dir binnen 24h einen personalisierten Zugang.
+                * Pflichtfelder. Du erhältst sofort deinen personalisierten Demo-Link.
               </p>
             </div>
           )}
