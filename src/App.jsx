@@ -42,6 +42,8 @@ export default function App() {
     setIsSubmitting(true);
 
     try {
+      console.log('Sende Daten an Supabase:', formData);
+      
       const { data, error } = await supabase
         .from('beta_users')
         .insert([{
@@ -67,15 +69,21 @@ export default function App() {
       }
 
       const newUser = data[0];
+      console.log('Neuer User:', newUser);
+      
       if (newUser && newUser.demo_token) {
         const generatedDemoLink = `https://desktop-app-coaching.vercel.app?demo=${newUser.demo_token}`;
+        console.log('Generierter Demo-Link:', generatedDemoLink);
         setDemoLink(generatedDemoLink);
+      } else {
+        console.error('Kein demo_token erhalten!', newUser);
       }
       
       setBetaRequestSubmitted(true);
+      console.log('Beta-User erfolgreich angelegt:', newUser);
       
     } catch (error) {
-      console.error('Fehler:', error);
+      console.error('Fehler beim Speichern:', error);
       alert('Ein Fehler ist aufgetreten. Bitte versuche es später nochmal.');
     } finally {
       setIsSubmitting(false);
@@ -94,7 +102,9 @@ export default function App() {
       <nav className="border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="text-2xl font-bold text-blue-400">CoachingSpace</div>
+            <div className="text-2xl font-bold text-blue-400">
+              CoachingSpace
+            </div>
             <button 
               onClick={() => scrollToSection('beta-request')}
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors"
@@ -107,18 +117,92 @@ export default function App() {
 
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center bg-slate-800 rounded-full px-4 py-2 mb-8">
+            <span className="text-2xl mr-2">🧠</span>
+            <span className="text-sm text-slate-300">Triadisches KI-Coaching</span>
+          </div>
+          
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Die Zukunft des Coachings
           </h1>
+          
           <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-3xl mx-auto">
-            CoachingSpace revolutioniert die Coaching-Branche durch triadische KI-Integration.
+            CoachingSpace revolutioniert die Coaching-Branche durch triadische KI-Integration. 
+            Coach, Coachee und KI-Bot arbeiten strukturiert zusammen für nachhaltige Ergebnisse.
           </p>
-          <button 
-            onClick={() => scrollToSection('beta-request')}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
-          >
-            Beta-Zugang anfordern
-          </button>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button 
+              onClick={() => scrollToSection('beta-request')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
+            >
+              Beta-Zugang anfordern
+            </button>
+            <button 
+              onClick={() => scrollToSection('features')}
+              className="border border-slate-600 hover:border-slate-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
+            >
+              Mehr erfahren
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Triadisches KI-Coaching</h2>
+            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+              Revolutionärer 4-Phasen-Prozess: Coach und Coachee werden durch strukturierte KI-Unterstützung zu nachhaltigen Lösungen geführt.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+              <h3 className="text-2xl font-bold mb-4">4-Phasen-Prozess</h3>
+              <p className="text-slate-300 mb-6">
+                Strukturierter Coaching-Ablauf mit KI-gestützter Gesprächsführung für optimale Ergebnisse in jeder Session.
+              </p>
+              <div className="bg-slate-700 rounded-lg p-4">
+                <div className="text-sm text-slate-300 space-y-1">
+                  <div>• Problemdefinition</div>
+                  <div>• Zielfindung</div>
+                  <div>• Lösungsentwicklung</div>
+                  <div>• Umsetzungsplanung</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+              <h3 className="text-2xl font-bold mb-4">Prompt-Bibliothek</h3>
+              <p className="text-slate-300 mb-6">
+                Umfangreiche Sammlung vorgefertigter Coaching-Aufträge und Gesprächsführungs-Prompts für effektive KI-gestützte Sessions.
+              </p>
+              <div className="bg-slate-700 rounded-lg p-4">
+                <div className="text-sm text-slate-300 space-y-1">
+                  <div>• Analyse von Widerständen</div>
+                  <div>• Bild-Ziel-Analyse</div>
+                  <div>• Erfolgsimagination entwickeln</div>
+                  <div>• Weitere strukturierte Prompts...</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+              <h3 className="text-2xl font-bold mb-4">Video-Integration</h3>
+              <p className="text-slate-300 mb-6">
+                Coach und Coachee nutzen gemeinsam im Video-Call die KI-Unterstützung für transparente und effektive Sessions.
+              </p>
+              <div className="bg-slate-700 rounded-lg p-4">
+                <div className="text-sm text-slate-300 space-y-1">
+                  <div>• Screen-Sharing möglich</div>
+                  <div>• Gemeinsame KI-Nutzung</div>
+                  <div>• Session-Dokumentation</div>
+                  <div>• Transparenter Prozess</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -127,6 +211,7 @@ export default function App() {
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-6">Beta-Zugang anfordern</h2>
             <p className="text-xl text-slate-300">
+              Sei einer der ersten Coaches, die triadisches KI-Coaching erleben. 
               Du erhältst sofort einen personalisierten Demo-Zugang.
             </p>
           </div>
@@ -150,23 +235,47 @@ export default function App() {
                   >
                     {demoLink}
                   </a>
+                  <p className="text-xs text-slate-500 mt-2">
+                    Link ist 30 Tage gültig
+                  </p>
                 </div>
               )}
               
-              
-                href={demoLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-block"
-              >
-                Demo jetzt starten
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href={demoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors inline-block"
+                >
+                  Demo jetzt starten
+                </a>
+                <button
+                  onClick={() => {
+                    setBetaRequestSubmitted(false);
+                    setDemoLink('');
+                    setFormData({
+                      firstName: '',
+                      lastName: '',
+                      email: '',
+                      company: '',
+                      experience: '',
+                      interest: ''
+                    });
+                  }}
+                  className="border border-slate-600 hover:border-slate-500 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+                >
+                  Weitere Anmeldung
+                </button>
+              </div>
             </div>
           ) : (
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Vorname *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Vorname *
+                  </label>
                   <input
                     type="text"
                     name="firstName"
@@ -178,7 +287,9 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nachname *</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Nachname *
+                  </label>
                   <input
                     type="text"
                     name="lastName"
@@ -192,7 +303,9 @@ export default function App() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">E-Mail-Adresse *</label>
+                <label className="block text-sm font-medium mb-2">
+                  E-Mail-Adresse *
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -205,7 +318,9 @@ export default function App() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Unternehmen / Praxis</label>
+                <label className="block text-sm font-medium mb-2">
+                  Unternehmen / Praxis
+                </label>
                 <input
                   type="text"
                   name="company"
@@ -218,7 +333,9 @@ export default function App() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Coaching-Erfahrung</label>
+                <label className="block text-sm font-medium mb-2">
+                  Coaching-Erfahrung
+                </label>
                 <select
                   name="experience"
                   value={formData.experience}
@@ -245,7 +362,7 @@ export default function App() {
                   onChange={handleInputChange}
                   rows={4}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                  placeholder="Erzähl uns kurz, was dich neugierig macht..."
+                  placeholder="Erzähl uns kurz, was dich neugierig macht auf triadisches KI-Coaching..."
                   disabled={isSubmitting}
                 />
               </div>
@@ -257,6 +374,10 @@ export default function App() {
               >
                 {isSubmitting ? 'Erstelle Demo-Zugang...' : 'Demo-Zugang anfordern'}
               </button>
+
+              <p className="text-sm text-slate-400 mt-4 text-center">
+                * Pflichtfelder. Du erhältst sofort deinen personalisierten Demo-Link.
+              </p>
             </div>
           )}
         </div>
@@ -264,8 +385,12 @@ export default function App() {
 
       <footer className="border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="text-2xl font-bold text-blue-400 mb-4">CoachingSpace</div>
-          <p className="text-slate-400">Die Zukunft des Coachings beginnt hier.</p>
+          <div className="text-2xl font-bold text-blue-400 mb-4">
+            CoachingSpace
+          </div>
+          <p className="text-slate-400">
+            Die Zukunft des Coachings beginnt hier.
+          </p>
         </div>
       </footer>
     </div>
