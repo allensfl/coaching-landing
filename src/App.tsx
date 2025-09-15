@@ -1,237 +1,166 @@
 import React, { useState } from 'react';
 
 export default function App() {
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
-  const [feedbackData, setFeedbackData] = useState({
-    name: '',
+  const [betaRequestSubmitted, setBetaRequestSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     company: '',
-    message: ''
+    experience: '',
+    interest: ''
   });
-  const [showLogin, setShowLogin] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [loginError, setLoginError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleBetaRequest = (e) => {
     e.preventDefault();
-    setLoginError('');
     
-    const validAccounts = [
-      'coach1@test.com',
-      'coach2@test.com', 
-      'beta@coachingspace.com'
-    ];
-    
-    if (validAccounts.includes(loginData.email) && loginData.password === 'test2024') {
-      window.location.href = 'https://desktop-app-coaching.vercel.app';
-    } else {
-      setLoginError('Ungültige Anmeldedaten. Verwende einen gültigen Beta-Account.');
+    // Validierung
+    if (!formData.firstName || !formData.lastName || !formData.email) {
+      alert('Bitte fülle alle Pflichtfelder aus.');
+      return;
     }
-  };
 
-  const fillDemoAccount = () => {
-    setLoginData({ email: 'coach1@test.com', password: 'test2024' });
-  };
-
-  const handleFeedbackSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFeedbackSubmitted(true);
-    console.log('Feedback submitted:', feedbackData);
-  };
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // Email-Validierung
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Bitte gib eine gültige E-Mail-Adresse ein.');
+      return;
     }
+
+    // Hier würdest du die Daten an dein Backend senden
+    console.log('Beta-Anfrage:', formData);
+    setBetaRequestSubmitted(true);
   };
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
-            <span className="text-xl font-bold">CoachingSpace</span>
+      <nav className="border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="text-2xl font-bold text-blue-400">
+              CoachingSpace
+            </div>
+            <button 
+              onClick={() => document.getElementById('beta-request').scrollIntoView({ behavior: 'smooth' })}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium transition-colors"
+            >
+              Beta-Zugang anfordern
+            </button>
           </div>
-          <button 
-            onClick={() => setShowLogin(true)}
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors"
-          >
-            Beta-Zugang
-          </button>
         </div>
       </nav>
 
-      {/* Login Modal */}
-      {showLogin && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full border border-slate-700">
-            <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold mb-2">Beta-Login</h3>
-              <p className="text-slate-400">Melde dich mit deinem Beta-Account an</p>
-            </div>
-
-            {loginError && (
-              <div className="bg-red-600/20 border border-red-500/30 rounded-lg p-3 mb-4">
-                <p className="text-red-400 text-sm">{loginError}</p>
-              </div>
-            )}
-
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">E-Mail</label>
-                <input 
-                  type="email" 
-                  required
-                  placeholder="deine@email.com"
-                  value={loginData.email}
-                  onChange={(e) => setLoginData({...loginData, email: e.target.value})}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Passwort</label>
-                <input 
-                  type="password" 
-                  required
-                  placeholder="Passwort"
-                  value={loginData.password}
-                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-              
-              <button 
-                type="submit" 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-              >
-                Anmelden
-              </button>
-            </form>
-
-            <div className="mt-6 p-4 bg-blue-600/20 border border-blue-500/30 rounded-lg">
-              <p className="text-blue-300 text-sm mb-3">Demo-Account verwenden:</p>
-              <button
-                onClick={fillDemoAccount}
-                className="w-full bg-blue-600/50 hover:bg-blue-600 text-blue-100 px-4 py-2 rounded text-sm transition-colors border border-blue-500/50"
-              >
-                Demo-Account ausfüllen
-              </button>
-            </div>
-
+      {/* Hero Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center bg-slate-800 rounded-full px-4 py-2 mb-8">
+            <span className="text-2xl mr-2">🧠</span>
+            <span className="text-sm text-slate-300">Triadisches KI-Coaching</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Die Zukunft des Coachings
+          </h1>
+          
+          <p className="text-xl text-slate-300 mb-12 leading-relaxed max-w-3xl mx-auto">
+            CoachingSpace revolutioniert die Coaching-Branche durch triadische KI-Integration. 
+            Coach, Coachee und KI-Bot arbeiten strukturiert zusammen für nachhaltige Ergebnisse.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => {
-                setShowLogin(false);
-                setLoginError('');
-                setLoginData({ email: '', password: '' });
-              }}
-              className="mt-4 w-full text-slate-400 hover:text-white transition-colors"
+              onClick={() => document.getElementById('beta-request').scrollIntoView({ behavior: 'smooth' })}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
             >
-              Abbrechen
+              Beta-Zugang anfordern
+            </button>
+            <button 
+              onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+              className="border border-slate-600 hover:border-slate-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors"
+            >
+              Mehr erfahren
             </button>
           </div>
         </div>
-      )}
+      </section>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-24 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center bg-blue-600/20 border border-blue-500/30 rounded-full px-4 py-2 mb-8">
-            <span className="text-sm text-blue-300">Triadisches KI-Coaching</span>
-          </div>
-          
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Coaching
-            <span className="text-blue-400 block">neu gedacht</span>
-          </h1>
-          
-          <p className="text-xl text-slate-300 mb-12 max-w-3xl mx-auto">
-            Die erste All-in-One-Plattform mit innovativem triadischen KI-Coaching-Modul, 
-            speziell für professionelle Coaches entwickelt. Elegant, strukturiert und effektiv.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button 
-              onClick={() => setShowLogin(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors shadow-xl"
-            >
-              Plattform erkunden
-            </button>
-            
-            <button 
-              onClick={() => scrollToSection('feedback')}
-              className="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-colors border border-slate-600"
-            >
-              Feedback geben
-            </button>
-          </div>
-
-          {/* App Preview */}
-          <div className="relative max-w-5xl mx-auto">
-            <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
-              <div className="bg-slate-700 px-4 py-3 flex items-center space-x-2">
-                <div className="flex space-x-1">
+      {/* App Preview */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-slate-800 rounded-3xl p-8 shadow-2xl">
+            <div className="bg-slate-900 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold">CoachingSpace Dashboard</h3>
+                <div className="flex space-x-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                 </div>
-                <div className="text-slate-400 text-sm ml-4">desktop-app-coaching.vercel.app/ki-coaching</div>
               </div>
-              <div className="p-8 text-center">
-                <h3 className="text-2xl font-bold mb-2">Triadisches KI-Coaching</h3>
-                <p className="text-slate-400">Coach + Coachee + KI-Bot im strukturierten 4-Phasen-Prozess</p>
+              <div className="space-y-4">
+                <div className="bg-blue-600/20 border border-blue-500/30 rounded-lg p-4">
+                  <div className="text-red-600 text-4xl mb-2">🎯</div>
+                  <h4 className="font-semibold mb-2">KI-Coaching aktiv</h4>
+                  <p className="text-sm text-slate-300">Triadische Session mit Sarah M. läuft</p>
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-slate-700 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">12</div>
+                    <div className="text-xs text-slate-400">Aktive Coachees</div>
+                  </div>
+                  <div className="bg-slate-700 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">8</div>
+                    <div className="text-xs text-slate-400">Sessions heute</div>
+                  </div>
+                  <div className="bg-slate-700 rounded-lg p-3 text-center">
+                    <div className="text-2xl mb-1">94%</div>
+                    <div className="text-xs text-slate-400">Erfolgsrate</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Triadisches KI-Coaching Section */}
-      <section className="py-24 px-6 bg-slate-800/50">
-        <div className="max-w-7xl mx-auto">
+      {/* KI-Coaching Section */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Triadisches KI-Coaching</h2>
+            <h2 className="text-4xl font-bold mb-6">Triadisches KI-Coaching</h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Innovatives Coaching-Modell: Coach, Coachee und KI-Bot arbeiten strukturiert zusammen 
-              in einem durchdachten 4-Phasen-Prozess
+              Revolutionärer 4-Phasen-Prozess: Coach und Coachee werden durch strukturierte KI-Unterstützung zu nachhaltigen Lösungen geführt.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <h3 className="text-2xl font-bold mb-4">4-Phasen-Prozess</h3>
               <p className="text-slate-300 mb-6">
-                Strukturierter Coaching-Ablauf: Problem- & Zielbeschreibung → Problemanalyse → 
-                Lösungsstrategie → Abschluss & Transfer
+                Strukturierter Coaching-Ablauf mit KI-gestützter Gesprächsführung für optimale Ergebnisse in jeder Session.
               </p>
-              <div className="space-y-2 text-sm text-slate-400">
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                  Phase I: Problem & Ziel
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full mr-2"></div>
-                  Phase II: Problemanalyse
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                  Phase III: Lösungsstrategie
-                </div>
-                <div className="flex items-center">
-                  <div className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></div>
-                  Phase IV: Abschluss & Transfer
+              <div className="bg-slate-700 rounded-lg p-4">
+                <div className="text-sm text-slate-300 space-y-1">
+                  <div>• Problemdefinition</div>
+                  <div>• Zielfindung</div>
+                  <div>• Lösungsentwicklung</div>
+                  <div>• Umsetzungsplanung</div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <h3 className="text-2xl font-bold mb-4">Prompt-Bibliothek</h3>
               <p className="text-slate-300 mb-6">
-                Umfangreiche Sammlung vorgefertigter Coaching-Aufträge und Gesprächsführungs-Prompts 
-                für effektive KI-gestützte Sessions
+                Umfangreiche Sammlung vorgefertigter Coaching-Aufträge und Gesprächsführungs-Prompts für effektive KI-gestützte Sessions.
               </p>
               <div className="bg-slate-700 rounded-lg p-4">
                 <div className="text-sm text-slate-300 space-y-1">
@@ -243,111 +172,17 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-blue-500/50 transition-colors">
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <h3 className="text-2xl font-bold mb-4">Video-Integration</h3>
               <p className="text-slate-300 mb-6">
-                Coach und Coachee nutzen gemeinsam im Video-Call den integrierten Coach-Bot 
-                als dritte Instanz im Coaching-Prozess
+                Coach und Coachee nutzen gemeinsam im Video-Call die KI-Unterstützung für transparente und effektive Sessions.
               </p>
-              <div className="bg-slate-700 rounded-lg p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">KI-Modell: Integrierter Coach-Bot (Lokal)</span>
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Triadisches vs Dyadisches */}
-          <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-            <h4 className="text-xl font-bold mb-4 text-center">Was macht triadisches KI-Coaching besonders?</h4>
-            <p className="text-slate-300 text-center max-w-4xl mx-auto">
-              Im Gegensatz zum dyadischen KI-Coaching (nur Coach oder nur Coachee mit KI) arbeiten 
-              beim triadischen Modell alle drei Parteien <strong>gemeinsam</strong> an der Lösung. 
-              Der KI-Bot wird gezielt als Coaching-Assistenz in bestimmten Prozess-Phasen eingesetzt.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Traditionelle Features */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Vollständige Coaching-Plattform</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-              Alle Tools die du als professioneller Coach brauchst - von der Klientenverwaltung bis zur Rechnungsstellung
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Client Management</h3>
-              <p className="text-slate-300">
-                Verwalte alle deine Coachees professionell. Von der ersten Kontaktaufnahme bis zum erfolgreichen Abschluss.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Session Management</h3>
-              <p className="text-slate-300">
-                Terminplanung, Session-Notizen, Dokumentation und Fortschrittsverfolgung in einem System.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              </div>
-              <h3 className="text-2xl font-bold mb-4">Business Analytics</h3>
-              <p className="text-slate-300">
-                Dashboard mit Kennzahlen, Rechnungsstellung und Business-Insights für dein Coaching-Business.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-24 px-6 bg-slate-800/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Was Coaches sagen</h2>
-            <p className="text-xl text-slate-300">Feedback von professionellen Coaches zum triadischen KI-Coaching</p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-              <p className="text-lg text-slate-300 mb-6">
-                "Das triadische KI-Coaching ist ein Gamechanger. Die strukturierten Phasen und die Prompt-Bibliothek 
-                geben dem Coaching-Prozess eine neue Tiefe. Der KI-Bot als dritte Instanz bringt überraschende Perspektiven."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  SM
-                </div>
-                <div>
-                  <h4 className="font-semibold">Sarah Müller</h4>
-                  <p className="text-slate-400">Executive Coach, München</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-              <p className="text-lg text-slate-300 mb-6">
-                "Die 4-Phasen-Struktur macht die Sessions viel fokussierter. 
-                Besonders die Prompt-Bibliothek hilft bei der gezielten Gesprächsführung mit dem KI-Bot."
-              </p>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  MK
-                </div>
-                <div>
-                  <h4 className="font-semibold">Michael Klein</h4>
-                  <p className="text-slate-400">Business Coach, Hamburg</p>
+              <div className="bg-slate-700 rounded-lg p-4">
+                <div className="text-sm text-slate-300 space-y-1">
+                  <div>• Screen-Sharing möglich</div>
+                  <div>• Gemeinsame KI-Nutzung</div>
+                  <div>• Session-Dokumentation</div>
+                  <div>• Transparenter Prozess</div>
                 </div>
               </div>
             </div>
@@ -355,113 +190,188 @@ export default function App() {
         </div>
       </section>
 
-      {/* Feedback Form */}
-      <section id="feedback" className="py-24 px-6">
-        <div className="max-w-4xl mx-auto">
+      {/* Traditional Features */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-800/50">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Dein Feedback ist wertvoll</h2>
+            <h2 className="text-4xl font-bold mb-6">Komplette Coaching-Plattform</h2>
             <p className="text-xl text-slate-300">
-              Als Coach-Kollege ist deine Meinung entscheidend für die Weiterentwicklung der Plattform
+              Alle Tools die du als Coach brauchst - in einer integrierten Lösung
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-blue-600/10 border border-blue-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-blue-400">Client Management</h3>
+              <p className="text-slate-300">
+                Verwalte alle deine Coachees professionell mit Kontaktdaten, Session-Historie und Fortschrittsdokumentation.
+              </p>
+            </div>
+
+            <div className="bg-green-600/10 border border-green-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-green-400">Session Management</h3>
+              <p className="text-slate-300">
+                Terminplanung, Session-Notizen und Aufgaben-Tracking zwischen den Terminen - alles in einem System.
+              </p>
+            </div>
+
+            <div className="bg-purple-600/10 border border-purple-500/20 rounded-2xl p-8">
+              <h3 className="text-2xl font-bold mb-4 text-purple-400">Business Analytics</h3>
+              <p className="text-slate-300">
+                Übersichtliches Dashboard mit KPIs, Rechnungsstellung und Finanzübersicht für deine Coaching-Praxis.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Beta Request Form */}
+      <section id="beta-request" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6">Beta-Zugang anfordern</h2>
+            <p className="text-xl text-slate-300">
+              Sei einer der ersten Coaches, die triadisches KI-Coaching erleben. 
+              Wir erstellen dir einen personalisierten Beta-Zugang.
             </p>
           </div>
 
-          {feedbackSubmitted ? (
+          {betaRequestSubmitted ? (
             <div className="bg-green-600/20 border border-green-500/30 rounded-2xl p-8 text-center">
-              <h3 className="text-2xl font-bold mb-2 text-green-400">Vielen Dank!</h3>
-              <p className="text-slate-300">
-                Dein Feedback wurde erfolgreich übermittelt. Wir melden uns in Kürze bei dir.
+              <div className="text-4xl mb-4">✅</div>
+              <h3 className="text-2xl font-bold mb-4 text-green-400">Anfrage erhalten!</h3>
+              <p className="text-slate-300 mb-6">
+                Danke {formData.firstName}! Wir erstellen deinen personalisierten Beta-Zugang und melden uns binnen 24 Stunden mit den Zugangsdaten.
+              </p>
+              <p className="text-sm text-slate-400">
+                Falls du Fragen hast, antworte einfach auf unsere E-Mail.
               </p>
             </div>
           ) : (
             <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
               <div className="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">Name</label>
+                  <label className="block text-sm font-medium mb-2" htmlFor="firstName">
+                    Vorname *
+                  </label>
                   <input
                     type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Dein Vorname"
                     required
-                    value={feedbackData.name}
-                    onChange={(e) => setFeedbackData({...feedbackData, name: e.target.value})}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                    placeholder="Dein Name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">E-Mail</label>
+                  <label className="block text-sm font-medium mb-2" htmlFor="lastName">
+                    Nachname *
+                  </label>
                   <input
-                    type="email"
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Dein Nachname"
                     required
-                    value={feedbackData.email}
-                    onChange={(e) => setFeedbackData({...feedbackData, email: e.target.value})}
-                    className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                    placeholder="deine@email.com"
                   />
                 </div>
               </div>
-              
+
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-2">Coaching-Bereich</label>
+                <label className="block text-sm font-medium mb-2" htmlFor="email">
+                  E-Mail-Adresse *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  placeholder="deine@email.com"
+                  required
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2" htmlFor="company">
+                  Unternehmen / Praxis
+                </label>
                 <input
                   type="text"
-                  value={feedbackData.company}
-                  onChange={(e) => setFeedbackData({...feedbackData, company: e.target.value})}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="z.B. Executive Coaching, Life Coaching, etc."
+                  id="company"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  placeholder="Name deiner Coaching-Praxis"
                 />
               </div>
-              
+
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-300 mb-2">Dein Feedback</label>
+                <label className="block text-sm font-medium mb-2" htmlFor="experience">
+                  Coaching-Erfahrung
+                </label>
+                <select
+                  id="experience"
+                  name="experience"
+                  value={formData.experience}
+                  onChange={handleInputChange}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500"
+                >
+                  <option value="">Bitte wählen</option>
+                  <option value="< 1 Jahr">Weniger als 1 Jahr</option>
+                  <option value="1-3 Jahre">1-3 Jahre</option>
+                  <option value="3-5 Jahre">3-5 Jahre</option>
+                  <option value="5-10 Jahre">5-10 Jahre</option>
+                  <option value="10+ Jahre">Mehr als 10 Jahre</option>
+                </select>
+              </div>
+
+              <div className="mb-8">
+                <label className="block text-sm font-medium mb-2" htmlFor="interest">
+                  Was interessiert dich am meisten an KI-Coaching?
+                </label>
                 <textarea
-                  rows={5}
-                  required
-                  value={feedbackData.message}
-                  onChange={(e) => setFeedbackData({...feedbackData, message: e.target.value})}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                  placeholder="Was denkst du über die Plattform? Wie findest du das triadische KI-Coaching-Konzept?"
+                  id="interest"
+                  name="interest"
+                  value={formData.interest}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                  placeholder="Erzähl uns kurz, was dich neugierig macht auf triadisches KI-Coaching..."
                 />
               </div>
-              
+
               <button
-                onClick={handleFeedbackSubmit}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors"
+                onClick={handleBetaRequest}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-xl transition-colors"
               >
-                Feedback senden
+                Beta-Zugang anfordern
               </button>
+
+              <p className="text-sm text-slate-400 mt-4 text-center">
+                * Pflichtfelder. Wir erstellen dir binnen 24h einen personalisierten Zugang.
+              </p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Login Section Info */}
-      <section className="py-24 px-6 bg-slate-800">
-        <div className="max-w-md mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Beta-Zugang anfordern</h2>
-          <p className="text-slate-400 mb-8">
-            Interesse an einem Beta-Account? Kontaktiere uns über das Feedback-Formular 
-            oder klicke oben auf "Beta-Zugang" um dich mit einem Demo-Account anzumelden.
-          </p>
-          
-          <div className="bg-slate-700 rounded-2xl p-6 border border-slate-600">
-            <h3 className="text-lg font-semibold mb-3">Demo-Accounts verfügbar:</h3>
-            <div className="text-sm text-slate-300 space-y-1">
-              <div>coach1@test.com</div>
-              <div>coach2@test.com</div>
-              <div>beta@coachingspace.com</div>
-            </div>
-            <div className="text-xs text-slate-400 mt-3">Passwort für alle: test2024</div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="bg-slate-800 border-t border-slate-700 py-12">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
-            <span className="text-xl font-bold">CoachingSpace</span>
+      <footer className="border-t border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="text-2xl font-bold text-blue-400 mb-4">
+            CoachingSpace
           </div>
-          <p className="text-slate-400">© 2024 CoachingSpace. Entwickelt für professionelle Coaches.</p>
+          <p className="text-slate-400">
+            Die Zukunft des Coachings beginnt hier.
+          </p>
         </div>
       </footer>
     </div>
