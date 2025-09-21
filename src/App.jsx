@@ -161,33 +161,49 @@ export default function App() {
               className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none"
             />
 
-            <select
-              name="experience"
-              value={formData.experience}
-              onChange={handleChange}
-              className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-            >
-              <option value="">Coaching-Erfahrung auswählen *</option>
-              <option value="beginner">Anfänger (0-1 Jahre)</option>
-              <option value="intermediate">Fortgeschritten (1-3 Jahre)</option>
-              <option value="experienced">Erfahren (3-10 Jahre)</option>
-              <option value="expert">Experte (10+ Jahre)</option>
-            </select>
+            <div className="relative">
+              <select
+                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
+                className="w-full bg-slate-600/50 backdrop-blur border-0 rounded-2xl px-4 py-4 text-white shadow-lg focus:ring-2 focus:ring-blue-500/50 focus:outline-none appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em'
+                }}
+              >
+                <option value="">Coaching-Erfahrung auswählen *</option>
+                <option value="beginner">Anfänger (0-1 Jahre)</option>
+                <option value="intermediate">Fortgeschritten (1-3 Jahre)</option>
+                <option value="experienced">Erfahren (3-10 Jahre)</option>
+                <option value="expert">Experte (10+ Jahre)</option>
+              </select>
+            </div>
 
-            <select
-              name="coachingType"
-              value={formData.coachingType}
-              onChange={handleChange}
-              className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-            >
-              <option value="">Coaching-Schwerpunkt (optional)</option>
-              <option value="business">Business Coaching</option>
-              <option value="life">Life Coaching</option>
-              <option value="career">Career Coaching</option>
-              <option value="executive">Executive Coaching</option>
-              <option value="health">Health & Wellness</option>
-              <option value="other">Sonstiges</option>
-            </select>
+            <div className="relative">
+              <select
+                name="coachingType"
+                value={formData.coachingType}
+                onChange={handleChange}
+                className="w-full bg-slate-600/50 backdrop-blur border-0 rounded-2xl px-4 py-4 text-white shadow-lg focus:ring-2 focus:ring-blue-500/50 focus:outline-none appearance-none cursor-pointer"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em'
+                }}
+              >
+                <option value="">Coaching-Schwerpunkt (optional)</option>
+                <option value="business">Business Coaching</option>
+                <option value="life">Life Coaching</option>
+                <option value="career">Career Coaching</option>
+                <option value="executive">Executive Coaching</option>
+                <option value="health">Health & Wellness</option>
+                <option value="other">Sonstiges</option>
+              </select>
+            </div>
 
             <button
               onClick={handleSubmit}
